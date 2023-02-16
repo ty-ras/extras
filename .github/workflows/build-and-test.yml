@@ -35,7 +35,9 @@ jobs:
   build_and_test:
     strategy:
       matrix:
-        dir: [ cache ]
+        dir:
+        - cache
+        - main
     runs-on: ubuntu-latest
     name: Build and test ${{ matrix.dir }}
     steps:
