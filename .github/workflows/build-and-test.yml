@@ -38,6 +38,7 @@ jobs:
         dir:
         - cache
         - main
+        - resource-pool
     runs-on: ubuntu-latest
     name: Build and test ${{ matrix.dir }}
     steps:
