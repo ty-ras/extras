@@ -9,3 +9,5 @@ This all is done in such way that it does not make development tedious or boring
 
 This particular repository contains generic libraries which are not strictly required when creating apps utilizing TyRAS libraries, but which may be of great use:
 - [cache](./cache) contains lightweight caching mechanisms for caching values which are obtainable via async call and thus may be somewhat expensive to re-calculate every time.
+- [main](./main) contains library which makes it easier to execute entrypoint asynchronous main functions (e.g. non-ESM context), and
+- [resource-pool](./resource-pool) contains generic resource pool API and implementation, based on creation and destruction asynchronous callbacks.
