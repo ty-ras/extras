@@ -1,15 +1,19 @@
-import type * as spec from "../factory";
-import type * as api from "../api";
+/**
+ * @file This file contains utilities used by unit tests of this library.
+ */
 
+import type * as api from "../api.types";
+
+/* eslint-disable jsdoc/require-jsdoc */
 export const recordCreates =
-  <T>(array: Array<T>, resource: T): spec.ResourceCreate<T> =>
+  <T>(array: Array<T>, resource: T): api.ResourceCreate<T> =>
   () => {
     array.push(resource);
     return Promise.resolve(resource);
   };
 
 export const recordDestroys =
-  <T>(array: Array<T>): spec.ResourceDestroy<T> =>
+  <T>(array: Array<T>): api.ResourceDestroy<T> =>
   (resource) => {
     array.push(resource);
     return Promise.resolve();

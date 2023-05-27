@@ -1,23 +1,34 @@
-import * as api from "./api";
-import * as common from "./common";
-import * as pool from "./pool";
+/**
+ * @file This file contains internal code related to administation of resource pools.
+ */
 
+import type * as api from "./api.types";
+import * as common from "./common";
+import * as state from "./state";
+
+/**
+ * Creates implementation for `runEviction` function of {@link api.ResourcePoolAdministration} interface.
+ * This function is internal to this library, and not exposed to clients.
+ * @param poolState The {@link pool.ResourcePoolState}.
+ * @param destroy The callback to destroy one resource.
+ * @returns The implementation for `runEviction` function of {@link api.ResourcePoolAdministration} interface.
+ */
 export const createRunEviction =
   <TResource>(
-    state: pool.ResourcePoolState<TResource>,
-    destroy: pool.ResourceDestroyTask<TResource>,
+    poolState: state.ResourcePoolState<TResource>,
+    destroy: api.ResourceDestroy<TResource>,
   ): api.ResourcePoolAdministration<TResource>["runEviction"] =>
   async (resourceIdleTime) => {
     const shouldEvict: api.ResourceIdleTimeCustomizationFunction<TResource> =
       typeof resourceIdleTime === "number"
         ? ({ returnedAt, now }) => now - returnedAt >= resourceIdleTime
         : resourceIdleTime;
-    const { toBeEvicted, toBeRetained } = state.resources.reduce<
+    const { toBeEvicted, toBeRetained } = poolState.resources.reduce<
       EvictReduceState<TResource>
     >(
       (reduceState, r, idx) => {
         if (
-          idx >= state.minCount &&
+          idx >= poolState.minCount &&
           r &&
           r.returnedAt !== undefined &&
           shouldEvict({
@@ -39,7 +50,7 @@ export const createRunEviction =
       },
     );
 
-    state.resources = toBeRetained;
+    poolState.resources = toBeRetained;
     const destroyResults = await Promise.all(
       toBeEvicted.map(async (r) => {
         try {
@@ -60,5 +71,5 @@ export const createRunEviction =
 interface EvictReduceState<T> {
   now: number;
   toBeEvicted: Array<T>;
-  toBeRetained: Array<pool.Resource<T> | undefined>;
+  toBeRetained: Array<state.Resource<T> | undefined>;
 }

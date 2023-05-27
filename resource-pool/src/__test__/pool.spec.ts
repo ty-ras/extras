@@ -1,3 +1,7 @@
+/**
+ * @file This file contains unit tests for functionality in file `../pool.ts`.
+ */
+
 import test from "ava";
 import * as spec from "../factory";
 import * as errors from "../errors";
